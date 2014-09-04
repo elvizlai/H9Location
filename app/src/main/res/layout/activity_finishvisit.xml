@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_marka"/>
+
+        <TextView
+            android:id="@+id/location_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="正在定位..."
+            android:textColor="@color/bluetext"
+            android:textSize="20sp"/>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/clientName_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="客户名称"/>
+
+    <TextView
+        android:id="@+id/beginLocation_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始地点记录"/>
+
+    <TextView
+        android:id="@+id/beginTime_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="时间"/>
+
+    <TextView
+        android:id="@+id/visitReason_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="内容"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/visitResult_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="top"
+            android:hint="请输入拜访记录..."/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/isSyncDirary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="同步到日记"/>
+
+            <Button
+                android:id="@+id/finishVisit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="结束拜访"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

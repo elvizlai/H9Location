@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/upper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/clientName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="客户名称：上海华盖科技有限公司"/>
+
+        <TextView
+            android:id="@+id/startTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间：2014-08-02 09:05  开始拜访  来永政"/>
+
+        <TextView
+            android:id="@+id/startLoc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="地点：上海市闸北区万荣路1298号-3楼"/>
+
+        <TextView
+            android:id="@+id/visitReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="拜访原因：业务沟通"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/upper"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/finishTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间：2014-09-02 09:05  结束拜访"/>
+
+        <TextView
+            android:id="@+id/finishLoc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="地点：上海市闸北区万荣路1298号-3楼"/>
+
+        <TextView
+            android:id="@+id/visitResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="拜访记录："/>
+    </LinearLayout>
+
+
+</RelativeLayout>
