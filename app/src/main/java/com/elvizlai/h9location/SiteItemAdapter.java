@@ -1,6 +1,5 @@
 package com.elvizlai.h9location;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,6 @@ public class SiteItemAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //Log.v("ElvizLai", "getView " + position + " " + convertView);
 
         ViewHolder holder;
         if (convertView == null) {

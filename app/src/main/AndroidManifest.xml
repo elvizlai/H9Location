@@ -68,6 +68,7 @@
         <activity android:name=".activity.SiteListActivity"/>
         <activity android:name=".activity.BeginVisitActivity"/>
         <activity android:name=".activity.FinishVisitActivity"/>
+        <activity android:name=".activity.SiteList"/>
 
         <service
             android:name="com.baidu.location.f"

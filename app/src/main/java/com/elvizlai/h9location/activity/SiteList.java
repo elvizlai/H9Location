@@ -9,10 +9,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elvizlai.h9location.R;
@@ -25,6 +23,7 @@ import com.elvizlai.h9location.util.AsyncHttpUtil;
 import com.elvizlai.h9location.util.JSONUtil;
 import com.elvizlai.h9location.util.POAException;
 import com.elvizlai.h9location.util.TimeUtil;
+import com.elvizlai.h9location.util.ToastUtil;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -36,81 +35,90 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Elvizlai on 14-9-2.
+ * Created by Elvizlai on 14-9-5.
  */
-public class SiteListActivity extends Activity {
-    String notetype = "1";
+public class SiteList extends Activity {
     private long mExitTime;
-    private int scrolledX, scrolledY;
-    private TextView footerText;
-    private boolean loadingMore = false;
-    private int totalSize;
-    private List<SiteNote> siteNoteList = new ArrayList<SiteNote>();
-    private ListView siteItems;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0x1989 && resultCode == 0x8916) {
-            getListFromService(true);
-        }else if (requestCode==0x1989&&resultCode==0x0605){
-            //完成刷新
-            getListFromService(false);
-        }
-    }
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private List<SiteNote> mSiteNotes = new ArrayList<SiteNote>();
+    private ListView siteItems;
+    private Button loadingMoreButton;
+    private SiteItemAdapter mSiteItemAdapter;
+    private int totalSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sitelist);
 
-        getActionBar().setTitle("现场记录");
+        getActionBar().setTitle("现场记录列表");
 
         initView();
+
+        initAdapter();
+
         getListFromService(false);
     }
 
+
     private void initView() {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.msg_refreshable_view);
+
+
         siteItems = (ListView) findViewById(R.id.siteItems);
-        footerText = new TextView(SiteListActivity.this);
+        loadingMoreButton = new Button(this);
 
-
+        //获取下拉刷新控件
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.msg_refreshable_view);
+        //设定下拉的样式颜色
         mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
+        //设定下拉后执行的内容
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getListFromService(true);
+                getListFromService(false);
             }
         });
     }
 
-    private void getListFromService(final boolean isRefreshing) {
+    private void initAdapter() {
+        if (mSiteItemAdapter == null)
+            mSiteItemAdapter = new SiteItemAdapter(mSiteNotes);
 
 
-        String time = TimeUtil.getFormattedTimeStr();
-        //如果是加载更多
-        if (loadingMore) {
-            time = siteNoteList.get(totalSize - 1).getNoteTime();
-        } else
-
-            //如果是刷新
-            if (isRefreshing) {
-                if (siteNoteList != null && siteNoteList.size() > 0) {
-                    time = siteNoteList.get(0).getNoteTime();
-                    notetype = "-1";
-                }
+        loadingMoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //加载更多
+                loadingMoreButton.setText("正在加载......");
+                getListFromService(true);
+                loadingMoreButton.setEnabled(false);
             }
+        });
+
+        siteItems.setAdapter(mSiteItemAdapter);
+    }
+
+    private void getListFromService(boolean isloadingMore) {
+        String time = TimeUtil.getFormattedTimeStr();
+        String notetype = "1";
+
+        if (mSwipeRefreshLayout.isRefreshing() && mSiteNotes.get(0) != null) {
+            time = mSiteNotes.get(0).getNoteTime();
+            notetype = "-1";
+        }
+
+        if (isloadingMore) {
+            time = mSiteNotes.get(totalSize - 1).getNoteTime();
+        }
 
         SiteParameter siteParameter = new SiteParameter();
         siteParameter.setCount("20");
-        siteParameter.setNoteTime(time);
-        siteParameter.setNoteType(notetype);
+        siteParameter.setNoteTime(time);//todo
+        siteParameter.setNoteType(notetype);//todo
         siteParameter.setSign(Config.getInstance().getSign());
         siteParameter.setUserId(Config.getInstance().getUserId());
 
@@ -120,81 +128,47 @@ public class SiteListActivity extends Activity {
             jsonObject.put("siteParameter", JSONUtil.format(siteParameter));
         } catch (JSONException e) {
             e.printStackTrace();
+            ToastUtil.showMsg("系统异常，暂时无法提交");
+            return;
         }
 
         AsyncHttpUtil.post("getMoreOrNewSiteList", jsonObject, new AsyncHttpResponseHandler() {
+
             @Override
             public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                loadingMore = false;
-                if (mSwipeRefreshLayout.isRefreshing())
-                    mSwipeRefreshLayout.setRefreshing(false);
+                if (mSwipeRefreshLayout.isRefreshing()) {
+                    siteItems.setSelectionFromTop(0, 0);
+                    ToastUtil.showMsg("刷新完毕");
+                }
 
                 try {
                     MySiteNote mySiteNote = JSONUtil.parse(new String(bytes), MySiteNote.class);
-
                     int size = mySiteNote.getSiteNotes().size();
-
                     totalSize += size;
 
-
-                    System.out.println(totalSize + " size");
-
                     for (int x = 0; x < size; x++) {
-                        if (isRefreshing) {
-                            siteNoteList.add(0, map2SiteNote((Map) mySiteNote.getSiteNotes().get(size - x - 1)));
+                        if (mSwipeRefreshLayout.isRefreshing()) {
+                            mSiteNotes.add(0, map2SiteNote((Map) mySiteNote.getSiteNotes().get(size - x - 1)));
                         } else {
-                            siteNoteList.add(map2SiteNote((Map) mySiteNote.getSiteNotes().get(x)));
+                            mSiteNotes.add(map2SiteNote((Map) mySiteNote.getSiteNotes().get(x)));
                         }
                     }
 
                     //如果数量为20的倍数，则加载显示加载更多的按钮
-                    if (totalSize % 20 == 0) {
+                    if (totalSize != 0 && totalSize % 20 == 0) {
                         if (siteItems.getFooterViewsCount() == 0) {
-                            footerText.setText("点击加载更多...");
-                            footerText.setTextSize(22);
-                            footerText.setGravity(Gravity.CENTER);
-                            siteItems.addFooterView(footerText);
+                            loadingMoreButton.setText("点击加载更多...");
+                            loadingMoreButton.setTextSize(22);
+                            loadingMoreButton.setBackground(null);
+                            loadingMoreButton.setGravity(Gravity.CENTER);
+                            siteItems.addFooterView(loadingMoreButton);
                         }
                     } else {
-                        siteItems.removeFooterView(footerText);
+                        siteItems.removeFooterView(loadingMoreButton);
                     }
 
-                    siteItems.setOnScrollListener(new AbsListView.OnScrollListener() {
-                        @Override
-                        public void onScrollStateChanged(AbsListView view, int scrollState) {
-                            if (scrollState == SCROLL_STATE_IDLE) {
-                                if (siteItems != null) {
-                                    scrolledX = siteItems.getLastVisiblePosition();
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                        }
-                    });
-
-                    siteItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            if (position == totalSize) {
-                                loadingMore = true;
-                                //加载更多
-                                getListFromService(false);
-                            }
-                        }
-                    });
-
-                    //todo add list
-                    SiteItemAdapter siteItemAdapter = new SiteItemAdapter(siteNoteList);
-                    siteItems.setAdapter(siteItemAdapter);
-
-                    if ("-1".equals(notetype)) {
-                        siteItems.setSelectionFromTop(0, 0);
-                    } else {
-                        siteItems.setSelectionFromTop(scrolledX, scrolledY);
-                    }
-
+                    //通知内容变更
+                    mSiteItemAdapter.notifyDataSetChanged();
                 } catch (POAException e) {
                     e.printStackTrace();
                 }
@@ -202,7 +176,20 @@ public class SiteListActivity extends Activity {
 
             @Override
             public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                System.out.println("err:" + i);
+                ToastUtil.showMsg("获取内容失败");
+            }
+
+            @Override
+            public void onFinish() {
+                if (mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(false);
+
+                if (!loadingMoreButton.isEnabled()) {
+                    loadingMoreButton.setText("点击加载更多...");
+                    loadingMoreButton.setEnabled(true);
+                }
+
+                super.onFinish();
             }
         });
 

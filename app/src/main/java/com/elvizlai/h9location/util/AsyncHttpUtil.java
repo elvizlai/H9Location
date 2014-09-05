@@ -36,7 +36,7 @@ public class AsyncHttpUtil {
     public static void post(String methodName, JSONObject jsonObject, AsyncHttpResponseHandler responseHandler) {
 
         try {
-            StringEntity entity = new StringEntity(jsonObject.toString(),"UTF-8");
+            StringEntity entity = new StringEntity(jsonObject.toString(), "UTF-8");
             post(methodName, entity, responseHandler);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -49,12 +49,12 @@ public class AsyncHttpUtil {
         if (asyncHttpClient == null)
             asyncHttpClient = new AsyncHttpClient();
 
-        asyncHttpClient.post(ApplictionUtil.getContext(), getAbsoluteUrl(methodName), entity, "application/json", responseHandler);
+        asyncHttpClient.post(ApplictionUtil.getContext(), getAbsoluteUrl(methodName), entity, "application/json;charset=UTF-8", responseHandler);
     }
 
     public static void post(String methodName, String jsonStr, AsyncHttpResponseHandler responseHandler) {
         try {
-            StringEntity entity = new StringEntity(jsonStr);
+            StringEntity entity = new StringEntity(jsonStr, "UTF-8");
             post(methodName, entity, responseHandler);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

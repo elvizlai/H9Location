@@ -88,7 +88,7 @@ public class LoadingActivity extends Activity {
                     Config.getInstance().setUserId(mLoginEstResult.getUserId());
                     Config.getInstance().setIsVisited(mLoginEstResult.getIsVisited());
 
-                    Intent intent = new Intent(getBaseContext(), SiteListActivity.class);
+                    Intent intent = new Intent(getBaseContext(), SiteList.class);
 
                     //设置标志，存在就拉倒前台，不存在就新建一个
                     intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
