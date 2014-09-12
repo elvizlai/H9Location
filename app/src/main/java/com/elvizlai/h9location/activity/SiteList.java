@@ -20,9 +20,9 @@ import com.elvizlai.h9location.entity.MySiteNote;
 import com.elvizlai.h9location.entity.SiteNote;
 import com.elvizlai.h9location.entity.SiteParameter;
 import com.elvizlai.h9location.util.AsyncHttpUtil;
+import com.elvizlai.h9location.util.DateUtil;
 import com.elvizlai.h9location.util.JSONUtil;
 import com.elvizlai.h9location.util.POAException;
-import com.elvizlai.h9location.util.TimeUtil;
 import com.elvizlai.h9location.util.ToastUtil;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -103,7 +103,7 @@ public class SiteList extends Activity {
     }
 
     private void getListFromService(boolean isloadingMore) {
-        String time = TimeUtil.getFormattedTimeStr();
+        String time = DateUtil.getFormattedTimeStr();
         String notetype = "1";
 
         if (mSwipeRefreshLayout.isRefreshing() && mSiteNotes.get(0) != null) {

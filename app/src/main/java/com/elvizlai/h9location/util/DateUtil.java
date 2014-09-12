@@ -6,7 +6,7 @@ import java.util.Calendar;
 /**
  * Created by Elvizlai on 14-9-3.
  */
-public class TimeUtil {
+public class DateUtil {
     private final static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     static Calendar mCalendar = Calendar.getInstance();
 

@@ -33,7 +33,7 @@ public class SyncHttpUtil {
     public static void post(String methodName, JSONObject jsonObject, AsyncHttpResponseHandler responseHandler) {
 
         try {
-            StringEntity entity = new StringEntity(jsonObject.toString());
+            StringEntity entity = new StringEntity(jsonObject.toString(),"UTF-8");
             post(methodName, entity, responseHandler);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

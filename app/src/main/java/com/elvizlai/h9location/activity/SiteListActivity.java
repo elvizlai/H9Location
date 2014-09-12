@@ -22,9 +22,9 @@ import com.elvizlai.h9location.entity.MySiteNote;
 import com.elvizlai.h9location.entity.SiteNote;
 import com.elvizlai.h9location.entity.SiteParameter;
 import com.elvizlai.h9location.util.AsyncHttpUtil;
+import com.elvizlai.h9location.util.DateUtil;
 import com.elvizlai.h9location.util.JSONUtil;
 import com.elvizlai.h9location.util.POAException;
-import com.elvizlai.h9location.util.TimeUtil;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -93,7 +93,7 @@ public class SiteListActivity extends Activity {
     private void getListFromService(final boolean isRefreshing) {
 
 
-        String time = TimeUtil.getFormattedTimeStr();
+        String time = DateUtil.getFormattedTimeStr();
         //如果是加载更多
         if (loadingMore) {
             time = siteNoteList.get(totalSize - 1).getNoteTime();
